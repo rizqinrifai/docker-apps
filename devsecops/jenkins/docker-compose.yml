@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: jenkins
+    restart: on-failure
+    privileged: true
+    user: root
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'  # Maksimal penggunaan 1 CPU
+          memory: 2G   # Maksimal penggunaan 2GB RAM
+        reservations:
+          cpus: '0.5'  # Minimum penggunaan 0.5 CPU
+          memory: 1G   # Minimum penggunaan 1GB RAM
+    networks:
+      - jenkins
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.jenkins.entrypoints=websecure"
+      - "traefik.http.routers.jenkins.rule=Host(`jenkins.teamdev.id`)"
+      - "traefik.http.routers.jenkins.service=jenkins"
+      - "traefik.http.services.jenkins.loadbalancer.server.port=8080"
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  jenkins-data:
+
+networks:
+  jenkins:
+  proxy:
+    external: true
