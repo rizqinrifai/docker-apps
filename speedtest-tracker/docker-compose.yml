@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  speedtest-tracker:
+    container_name: speedtest-tracker
+    image: lscr.io/linuxserver/speedtest-tracker:latest
+    ports:
+      - '8072:80'   # Maps port 80 inside the container to port 8072 on the host for HTTP access.
+      - '8472:443'  # Maps port 443 inside the container to port 8472 on the host for HTTPS access.
+    environment:
+      - PUID=1000  # Sets the user ID the service will run as.
+      - PGID=1000  # Sets the group ID the service will run as.
+      - APP_KEY=base64:s5xs13....  # Application key for Laravel framework security. Generate a App Key here - https://speedtest-tracker.dev
+      - APP_URL=https://speedtest.yoursite/localIP.com  # Public URL where the Speedtest Tracker will be accessible.
+      - DB_CONNECTION=sqlite  # Uses SQLite as the database.
+      - SPEEDTEST_SCHEDULE="0 */3 * * *"  # Cron schedule, runs every 3 hours.
+      - DISPLAY_TIMEZONE=Pacific/Auckland  # Sets the timezone for displaying data in the UI.
+    volumes:
+      - ./data:/config  # Mounts the directory for persistent data.
+      - ./ssl-keys:/config/keys  # Mounts the directory for SSL keys.
+    restart: unless-stopped  # Ensures the container restarts unless it is explicitly stopped.
