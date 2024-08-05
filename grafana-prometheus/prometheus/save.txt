@@ -24,4 +24,4 @@ scrape_configs:
       - targets: ['192.168.0.187:9100'] #Change this to your server's IP
   - job_name: jenkins # Change to whatever you like
     static_configs:
-      - targets: ['jenkins.teamdev.id'] #Change this to your server's IP
+      - targets: ['https://jenkins.teamdev.id'] #Change this to your server's IP
