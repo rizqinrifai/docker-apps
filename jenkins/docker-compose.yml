@@ -2,21 +2,35 @@ version: '3.8'
 services:
   jenkins:
     image: jenkins/jenkins:lts
-    restart: always
+    container_name: jenkins
     privileged: true
     user: root
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'  # Maksimal penggunaan 1 CPU
-          memory: 2G   # Maksimal penggunaan 2GB RAM
-        reservations:
-          cpus: '0.5'  # Minimum penggunaan 0.5 CPU
-          memory: 1G   # Minimum penggunaan 1GB RAM
     ports:
       - 8080:8080
       - 50000:50000
-    container_name: jenkins
     volumes:
-      - /home/ubuntu/jenkins_compose/jenkins_configuration:/var/jenkins_home
+      - /home/${myname}/jenkins_compose/jenkins_configuration:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'  # Maksimal penggunaan 2 CPU
+          memory: 3G   # Maksimal penggunaan 2GB RAM
+        reservations:
+          cpus: '1.0'  # Minimum penggunaan 0.5 CPU
+          memory: 2G   # Minimum penggunaan 1GB RAM
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    ports:
+      - 54322:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
