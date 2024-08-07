@@ -13,3 +13,8 @@ services:
       - "mariadb-data:/var/lib/mysql"
     networks:
       - mariadb-network
+
+volumes:
+  mariadb-data:
+    driver: local
+    name: mariadb-data
