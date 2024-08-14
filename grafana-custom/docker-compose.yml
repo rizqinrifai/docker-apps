@@ -1,0 +1,23 @@
+version: '3'
+services:
+  grafana:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./custom:/usr/share/grafana/public/custom
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_SERVER_ROOT_URL=http://localhost:3000
+      - GF_CUSTOM_BRANDING_ENABLED=true
+      - GF_CUSTOM_BRANDING_FOOTER_LINK_TEXT=My Company
+      - GF_CUSTOM_BRANDING_FOOTER_LINK_URL=https://mycompany.com
+
+volumes:
+  grafana-storage:
