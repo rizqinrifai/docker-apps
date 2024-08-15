@@ -1,0 +1,6 @@
+version: "3.0"
+
+services:
+  locust-exporter:
+    image: containersol/locust_exporter
+    network_mode: "host"
