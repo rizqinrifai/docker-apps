@@ -1,0 +1,20 @@
+version: '3.6'
+services:
+  web:
+    image: 'gitlab/gitlab-ce:latest'
+    container_name: gitlab
+    restart: always
+    ports:
+      - '8085:80'
+      - '1443:443'
+      - '2424:22'
+    volumes:
+      - 'gitlab_config:/etc/gitlab'
+      - 'gitlab_logs:/var/log/gitlab'
+      - 'gitlab_data:/var/opt/gitlab'
+    shm_size: '2gb'
+
+volumes:
+  gitlab_config: {}
+  gitlab_logs: {}
+  gitlab_data: {}

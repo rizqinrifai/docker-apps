@@ -26,7 +26,11 @@ scrape_configs:
     static_configs:
       - targets: ['192.168.0.187:9100'] #Change this to your server's IP
 
-  - job_name: jenkins # Change to whatever you like
+  - job_name: jenkins 
     metrics_path: /prometheus
     static_configs:
-      - targets: ['192.168.0.187:8080'] #Change this to your server's IP
+      - targets: ['192.168.0.187:8080'] 
+
+  - job_name: 'locust'
+    static_configs:
+      - targets: ['192.168.0.187:9646']

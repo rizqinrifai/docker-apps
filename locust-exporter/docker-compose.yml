@@ -1,6 +1,21 @@
 version: "3.0"
 
 services:
-  locust-exporter:
-    image: containersol/locust_exporter
-    network_mode: "host"
+  locust-metrics-exporter:
+        image: containersol/locust_exporter
+        ports:
+            - "9646:9646"
+        environment:
+            - LOCUST_EXPORTER_URI=http://192.168.0.187:8089
+        # depends_on:
+        #     - locust
+
+# services:
+#   locust-exporter:
+#     image: containersol/locust_exporter
+#     network_mode: "host"
+#     ports:
+#         - 9646:9646
+#     environment:
+#         - LOCUST_EXPORTER_URI=http://192.168.0.187:8089
+
