@@ -1,0 +1,33 @@
+version: '3.6'
+services:
+  web:
+    image: 'gitlab/gitlab-ce:latest'
+    container_name: gitlab
+    restart: always
+    ports:
+      - '8085:80'
+      - '1443:443'
+      - '2424:22'
+    volumes:
+      - 'gitlab_config:/etc/gitlab'
+      - 'gitlab_logs:/var/log/gitlab'
+      - 'gitlab_data:/var/opt/gitlab'
+    shm_size: '2gb'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.git.entrypoints=websecure"
+      - "traefik.http.routers.git.rule=Host(`git.teamdev.id`)"
+      - "traefik.http.routers.git.service=git"
+      - "traefik.http.services.git.loadbalancer.server.port=8085"
+    networks:
+      - proxy
+
+volumes:
+  gitlab_config: {}
+  gitlab_logs: {}
+  gitlab_data: {}
+
+networks:
+  proxy:
+    external: true
