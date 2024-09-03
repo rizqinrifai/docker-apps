@@ -1,0 +1,13 @@
+http:
+  routers:
+    stg-gis-insights-bluewave:
+      entryPoints:
+        - websecure
+      rule: "Host(`stg-gis-insights.bluewave.id`)"
+      service: stg-gis-insights-bluewave
+      tls: {}
+  services:
+    stg-gis-insights-bluewave:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.1.55:3030"
