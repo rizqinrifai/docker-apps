@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  server:
+    image: gitea/gitea:latest
+    container_name: gitea
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=db:5432
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=gitea
+      - GITEA__database__PASSWD=gitea_password
+    volumes:
+      - gitea_data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - gitea
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.gitea.entrypoints=websecure"
+      - "traefik.http.routers.gitea.rule=Host(`gitea.teamdev.id`)"
+      - "traefik.http.routers.gitea.service=gitea"
+      - "traefik.http.services.gitea.loadbalancer.server.port=3000"
+ #     - "traefik.http.routers.gitea.tls=true"
+
+  db:
+    image: postgres:13
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    container_name: gitea_db
+    environment:
+      POSTGRES_PASSWORD: postgres_password
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+      - ./init-gitea-db.sh:/docker-entrypoint-initdb.d/init-gitea-db.sh
+    networks:
+      - gitea
+      - proxy
+
+volumes:
+  gitea_data:
+  postgresql_data:
+
+networks:
+  gitea:
+    internal: true
+  proxy:
+    external: true

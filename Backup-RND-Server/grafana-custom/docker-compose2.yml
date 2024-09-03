@@ -1,0 +1,61 @@
+version: "3.8"
+
+services:
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+#    ports:
+#      - '3000:3000'
+    volumes:
+      - grafana-storage:/var/lib/grafana
+#      - ./img:/usr/share/grafana/public/img
+#      - ./css:/usr/share/grafana/public/css
+#      - ./grafana.ini:/etc/grafana/grafana.ini
+#      - /root/traefik/apps/grafana-pmt/test.png:/usr/share/grafana/public/img/grafana_icon.svg
+      - ./custom-entrypoint.sh:/custom-entrypoint.sh
+    entrypoint: ["/custom-entrypoint.sh"]
+    networks:
+      - monitoring
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.grafana.entrypoints=websecure"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.teamdev.id`)"
+      - "traefik.http.routers.grafana.service=grafana"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+      - "traefik.http.routers.grafana.tls=true"
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+ #   ports:
+ #     - '9090:9090'
+    restart: unless-stopped
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prom_data:/prometheus
+    networks:
+      - monitoring
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.prometheus.entrypoints=websecure"
+      - "traefik.http.routers.prometheus.rule=Host(`prometheus.teamdev.id`)"
+      - "traefik.http.routers.prometheus.service=prometheus"
+      - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
+      - "traefik.http.routers.prometheus.tls=true"
+
+volumes:
+  grafana-storage: {}
+  prom_data: {}
+
+networks:
+  monitoring:
+    driver: bridge
+  proxy:
+    external: true

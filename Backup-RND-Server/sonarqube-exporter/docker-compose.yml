@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  sonarqube-exporter:
+    image: quay.io/cyberzng/sonarqube-prometheus-exporter
+    ports:
+      - "9118:9118"
+    environment:
+      - SONARQUBE_URL=https://sonar.teamdev.id
+    depends_on:
+      - sonarqube

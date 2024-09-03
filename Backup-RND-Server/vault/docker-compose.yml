@@ -1,0 +1,33 @@
+services:
+  vault:
+    hostname: vault
+    container_name: vault
+    image: hashicorp/vault:latest
+    entrypoint: vault server -config=/vault/config/config.hcl
+    environment:
+        VAULT_ADDR: "http://0.0.0.0:8200"
+        VAULT_API_ADDR: "http://0.0.0.0:8200"
+    volumes:
+      - "./conf:/vault/config"
+      - "vault-data:/vault/data"
+    cap_add:
+      - IPC_LOCK
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.vault.entrypoints=websecure"
+      - "traefik.http.routers.vault.rule=Host(`vault.teamdev.id`)"
+      - "traefik.http.routers.vault.service=vault"
+      - "traefik.http.services.vault.loadbalancer.server.port=8200"
+#      - "traefik.http.routers.vault.tls=true"
+
+volumes:
+  vault-data:
+    driver: local
+    name: vault-data
+
+networks:
+  proxy:
+    external: true

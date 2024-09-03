@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  sonarqube-exporter:
+    image: return200/sonarqube-exporter:latest
+    ports:
+      - "8198:8198"
+    environment:
+      - SONARQUBE_SERVER=https://sonar.teamdev.id
+      - SONARQUBE_TOKEN=squ_fb5d03eaa4e284a1f571633b0076ddeb1b148139
+    restart: unless-stopped
