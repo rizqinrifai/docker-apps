@@ -1,13 +1,13 @@
 http:
   routers:
-    stg-gis-insights-bluewave:
+    flow-jenkins:
       entryPoints:
         - websecure
-      rule: "Host(`stg-gis-insights.bluewave.id`)"
-      service: stg-gis-insights-bluewave
+      rule: "Host(`flow-jenkins.getlogica.id`)"
+      service: flow-jenkins
       tls: {}
   services:
-    stg-gis-insights-bluewave:
+    flow-jenkins:
       loadBalancer:
         servers:
-          - url: "http://192.168.1.55:3030"
+          - url: "http://192.168.1.191:8080"
